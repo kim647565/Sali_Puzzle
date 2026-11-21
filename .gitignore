@@ -1,0 +1,22 @@
+# Installed dependencies
+node_modules/
+
+# Expo cache and generated files
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# Test coverage and TypeScript cache
+coverage/
+*.tsbuildinfo
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# Logs and OS metadata
+*.log
+.DS_Store
+Thumbs.db

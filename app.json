@@ -1,0 +1,17 @@
+{
+  "expo": {
+    "name": "Sali Puzzle",
+    "slug": "sali-puzzle",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "scheme": "salipuzzle",
+    "plugins": ["expo-router", "expo-sqlite"],
+    "android": {
+      "package": "com.salipuzzle.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#E8F1FF"
+      }
+    }
+  }
+}
