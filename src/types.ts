@@ -8,10 +8,12 @@ export type Level = {
   topic: string;
   difficulty: Difficulty;
   lesson: string;
+  example: string;
+  summary: string;
   objectives: string[];
   vocabulary: { word: string; definition: string }[];
   huntWords: string[];
-  clues: { number: number; clue: string; answer: string }[];
+  clues: { number: number; clue: string; answer: string; row: number; column: number; direction: "across" | "down" }[];
   grid: string[][];
 };
 

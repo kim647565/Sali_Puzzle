@@ -1,17 +1,79 @@
 import { useState } from "react";
-import { Alert, StyleSheet, Text, TextInput } from "react-native";
 import { router } from "expo-router";
-import { Button } from "../src/components/Button";
-import { Screen, Tile } from "../src/components/Screen";
-import { colors, text } from "../src/theme";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { PuzzleButton, puzzle, puzzleText } from "../src/components/PuzzleScreen";
+import { Screen } from "../src/components/Screen";
 import { useAppStore } from "../src/store";
+import { fonts } from "../src/theme";
 
 export default function Login() {
   const [nickname, setNickname] = useState("");
+  const [error, setError] = useState("");
   const players = useAppStore((state) => state.players);
+  const active = useAppStore((state) => state.player);
+  const ready = useAppStore((state) => state.ready);
   const createPlayer = useAppStore((state) => state.createPlayer);
   const setPlayer = useAppStore((state) => state.setPlayer);
-  const enter = () => { if (!createPlayer(nickname)) Alert.alert("Choose a different nickname", "Nickname cannot be empty or already in use."); else router.replace("/home"); };
-  return <Screen><Text style={text.title}>Who is solving today?</Text><Text style={[text.body, { color: colors.muted }]}>Your progress stays on this device and works offline.</Text><Tile color={colors.white}><Text style={styles.label}>New player</Text><TextInput value={nickname} onChangeText={setNickname} placeholder="Enter a nickname" placeholderTextColor={colors.muted} style={styles.input} autoCapitalize="words" /><Button onPress={enter}>Create player</Button></Tile>{players.length > 0 && <><Text style={text.subheading}>Choose a player</Text>{players.map((player) => <Button key={player.id} variant="quiet" onPress={() => { setPlayer(player); router.replace("/home"); }}>{player.nickname}</Button>)}</>}</Screen>;
+
+  function enter() {
+    if (!ready) return;
+    if (!nickname.trim()) {
+      setError("Enter your nickname to start.");
+      return;
+    }
+    if (!createPlayer(nickname)) {
+      setError("That nickname is already in use. Choose another or pick an existing player.");
+      return;
+    }
+    router.dismissTo("/home");
+  }
+
+  return <Screen background={puzzle.paper}>
+    <Text accessibilityRole="header" style={puzzleText.title}>{active ? "Switch player" : "Who’s solving today?"}</Text>
+    <Text style={puzzleText.body}>Each player’s scores and progress stay on this device.</Text>
+    {players.length > 0 && <View style={styles.list}>
+      <Text style={puzzleText.heading}>Choose a player</Text>
+      {players.map((player) => (
+        <Pressable key={player.id} accessibilityRole="button" accessibilityState={{ selected: player.id === active?.id }} style={({ pressed }) => [styles.player, pressed && styles.pressed]} onPress={() => {
+          setPlayer(player);
+          router.dismissTo("/home");
+        }}>
+          <View style={styles.avatar}><Text style={puzzleText.label}>{[...player.nickname][0]?.toUpperCase()}</Text></View>
+          <Text style={[puzzleText.label, styles.name]}>{player.nickname}</Text>
+          <Ionicons name={player.id === active?.id ? "checkmark-circle" : "chevron-forward"} size={21} color={puzzle.grape} />
+        </Pressable>
+      ))}
+    </View>}
+    <View style={styles.panel}>
+      <Text style={puzzleText.heading}>New player</Text>
+      <TextInput
+        accessibilityLabel="Nickname"
+        value={nickname}
+        onChangeText={(value) => { setNickname(value); setError(""); }}
+        onSubmitEditing={enter}
+        placeholder="Enter a nickname"
+        placeholderTextColor={puzzle.grape}
+        maxLength={24}
+        returnKeyType="done"
+        autoCapitalize="words"
+        style={[styles.input, !!error && styles.invalid]}
+      />
+      {error !== "" && <Text accessibilityLiveRegion="polite" style={styles.error}>{error}</Text>}
+      <PuzzleButton onPress={enter}>Create player</PuzzleButton>
+    </View>
+    {active && <PuzzleButton quiet onPress={() => router.dismissTo("/home")}>Back home</PuzzleButton>}
+  </Screen>;
 }
-const styles = StyleSheet.create({ label: { ...text.subheading, marginBottom: 12 }, input: { borderWidth: 1, borderColor: colors.line, borderRadius: 14, padding: 15, fontSize: 16, color: colors.ink, marginBottom: 14 } });
+
+const styles = StyleSheet.create({
+  list: { gap: 7 },
+  player: { minHeight: 54, flexDirection: "row", alignItems: "center", padding: 7, gap: 8, borderColor: puzzle.lilac, borderWidth: 1, borderRadius: 11, backgroundColor: puzzle.white },
+  name: { flex: 1 },
+  avatar: { width: 34, height: 34, borderRadius: 9, backgroundColor: puzzle.sunshine, alignItems: "center", justifyContent: "center" },
+  panel: { padding: 15, borderRadius: 17, gap: 9, backgroundColor: puzzle.white },
+  input: { borderWidth: 1, borderColor: puzzle.lilac, borderRadius: 10, padding: 11, color: puzzle.ink, fontSize: 16, fontFamily: fonts.body },
+  invalid: { borderColor: puzzle.error },
+  error: { color: puzzle.error, fontFamily: fonts.body },
+  pressed: { opacity: 0.72 },
+});

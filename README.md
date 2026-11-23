@@ -1,5 +1,22 @@
 # MASTER DEVELOPMENT PROMPT — SALI PUZZLE
 
+## Run and verify the app
+
+Use Node.js 24 for the automated SQLite tests and an Android emulator or phone with Expo Go for SDK 58. Use the matching Expo SDK when building the standalone app. [Expo SDK 58](https://docs.expo.dev/versions/v58.0.0/)
+
+```sh
+npm ci
+npm run start
+npm run typecheck
+npm run lint
+npm test -- --runInBand
+npx expo export --platform android
+```
+
+Use **View records** in the app to export a player's attempt history as a CSV through Android’s share sheet. Each valid straight-line Word Hunt submission and each fully filled crossword submission counts toward accuracy. Hints, incomplete entries, and duplicate discoveries leave accuracy unchanged.
+
+For an installable APK, run `npx eas-cli build --platform android --profile preview`. Use `--profile production` for a Play Store app bundle. To build on a configured Android workstation, run `npx expo run:android --variant release` with the Android SDK required by Expo SDK 58. Test offline behavior using a standalone Android build in airplane mode. [Build APKs for Android emulators and devices](https://docs.expo.dev/build-reference/apk/)
+
 ## ROLE AND OBJECTIVE
 
 Act as a Senior React Native Developer, Mobile Game Developer, Software Architect, UI/UX Designer, Educational Technology Specialist, Database Engineer, and Quality Assurance Engineer.

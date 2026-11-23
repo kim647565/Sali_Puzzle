@@ -15,12 +15,20 @@ export const colors = {
 
 export const spacing = { xs: 6, sm: 10, md: 16, lg: 24, xl: 32 } as const;
 
+export const fonts = { heading: "PoppinsBold", button: "PoppinsSemiBold", body: "NunitoRegular" } as const;
+
+export const fontAssets = {
+  [fonts.heading]: require("../assets/fonts/Poppins-Bold.ttf"),
+  [fonts.button]: require("../assets/fonts/Poppins-SemiBold.ttf"),
+  [fonts.body]: require("../assets/fonts/Nunito.ttf"),
+};
+
 export const text = {
-  title: { fontSize: 34, fontWeight: "800" as const, letterSpacing: -1 },
-  heading: { fontSize: 24, fontWeight: "800" as const },
-  subheading: { fontSize: 18, fontWeight: "700" as const },
-  body: { fontSize: 16, lineHeight: 24 },
-  small: { fontSize: 13, lineHeight: 18 }
+  title: { fontSize: 34, fontFamily: fonts.heading, letterSpacing: -1 },
+  heading: { fontSize: 24, fontFamily: fonts.heading },
+  subheading: { fontSize: 18, fontFamily: fonts.button },
+  body: { fontSize: 16, lineHeight: 24, fontFamily: fonts.body },
+  small: { fontSize: 13, lineHeight: 18, fontFamily: fonts.body }
 };
 
 export const shadow = Platform.select({
